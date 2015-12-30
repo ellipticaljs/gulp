@@ -4,8 +4,8 @@ var gulp=require('gulp'),
     sass = require('gulp-sass'),
     liveServer = require("live-server"),
     watch=require('gulp-watch'),
-    config=require('./config.json'),
     concat=require('gulp-concat');
+
 
 
 var tasks={};
@@ -14,7 +14,7 @@ tasks.default=function(){
     console.log('elliptical prototype projects. Tasks: start-live|start|start-app|start-live-app|start-live-sass|start-sass|sass-compile|sass-watch|scripts-watch|app-watch|app-build|components-build');
 };
 
-tasks.startLive=function(){
+tasks.startLive=function(config){
     //start server
     startLiveServer({
         port:config.livePort,
@@ -29,7 +29,7 @@ tasks.startLive=function(){
     watchSass();
 };
 
-tasks.start=function(){
+tasks.start=function(config){
     //start server
     var path=config.path;
     path=path.replace('.','');
@@ -45,7 +45,7 @@ tasks.start=function(){
     watchSass();
 };
 
-tasks.startLiveApp=function(){
+tasks.startLiveApp=function(config){
     //start server
     startLiveServer({
         port:config.livePort,
@@ -60,7 +60,7 @@ tasks.startLiveApp=function(){
     watchSass();
 };
 
-tasks.startApp=function(){
+tasks.startApp=function(config){
     //start server
     var path=config.path;
     path=path.replace('.','');
@@ -76,7 +76,7 @@ tasks.startApp=function(){
     watchSass();
 };
 
-tasks.startLiveSass=function(){
+tasks.startLiveSass=function(config){
     //start server
     startLiveServer({
         port:config.livePort,
@@ -88,7 +88,7 @@ tasks.startLiveSass=function(){
     watchSass();
 };
 
-tasks.startSass=function(){
+tasks.startSass=function(config){
     //start server
     var path=config.path;
     path=path.replace('.','');
@@ -102,7 +102,7 @@ tasks.startSass=function(){
     watchSass();
 };
 
-tasks.sassCompile=function(){
+tasks.sassCompile=function(config){
     compileSass(config.path);
 };
 
@@ -122,7 +122,7 @@ tasks.appBuild=function(){
     buildApp();
 };
 
-tasks.componentBuild=function(){
+tasks.componentsBuild=function(){
     moveElements();
 };
 
@@ -146,13 +146,13 @@ function startEcstaticServer(opts){
     ).listen(opts.port);
 }
 
-function compileSass(){
+function compileSass(config){
     gulp.src('./app.scss')
         .pipe(sass())
         .pipe(gulp.dest(config.path + '/css'));
 }
 
-function watchScripts(){
+function watchScripts(config){
     watch(config.src,function(files){
         concatScripts();
     });
@@ -172,7 +172,7 @@ function buildApp(){
         .pipe(gulp.dest('./public/scripts'));
 }
 
-function watchApp(){
+function watchApp(config){
     watch(config.src,function(files){
         buildApp();
     });
@@ -184,7 +184,7 @@ function moveElements(){
 }
 
 
-function concatScripts(){
+function concatScripts(config){
     var src=config.src;
     var dest=config.dest;
     var destFile=config.destFile;
@@ -193,6 +193,18 @@ function concatScripts(){
         .pipe(gulp.dest(dest));
 }
 
-
-
-module.exports=tasks;
+module.exports=function Tasks(config){
+    this.default=tasks.default();
+    this.startLive=tasks.startLive(config);
+    this.start=tasks.start(config);
+    this.startLiveApp=tasks.startLiveApp(config);
+    this.startApp=tasks.startApp(config);
+    this.startLiveSass=tasks.startLiveSass(config);
+    this.startSass=tasks.startSass(config);
+    this.sassCompile=tasks.sassCompile(config);
+    this.sassWatch=tasks.sassWatch();
+    this.scriptsWatch=tasks.scriptsWatch();
+    this.appWatch=tasks.appWatch();
+    this.appBuild=tasks.appBuild();
+    this.componentsBuild=tasks.componentsBuild();
+};
