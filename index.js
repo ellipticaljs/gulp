@@ -15,6 +15,7 @@ tasks.default=function(){
 };
 
 tasks.startLive=function(config){
+
     //start server
     startLiveServer({
         port:config.livePort,
@@ -23,10 +24,10 @@ tasks.startLive=function(config){
     });
 
     //watch scripts
-    watchScripts();
+    watchScripts(config);
 
     //watch sass
-    watchSass();
+    watchSass(config);
 };
 
 tasks.start=function(config){
@@ -39,10 +40,10 @@ tasks.start=function(config){
     });
 
     //watch scripts
-    watchScripts();
+    watchScripts(config);
 
     //watch sass
-    watchSass();
+    watchSass(config);
 };
 
 tasks.startLiveApp=function(config){
@@ -54,10 +55,10 @@ tasks.startLiveApp=function(config){
     });
 
     //watch app
-    watchApp();
+    watchApp(config);
 
     //watch sass
-    watchSass();
+    watchSass(config);
 };
 
 tasks.startApp=function(config){
@@ -70,10 +71,10 @@ tasks.startApp=function(config){
     });
 
     //watch app
-    watchApp();
+    watchApp(config);
 
     //watch sass
-    watchSass();
+    watchSass(config);
 };
 
 tasks.startLiveSass=function(config){
@@ -85,7 +86,7 @@ tasks.startLiveSass=function(config){
     });
 
     //watch sass
-    watchSass();
+    watchSass(config);
 };
 
 tasks.startSass=function(config){
@@ -99,22 +100,22 @@ tasks.startSass=function(config){
 
 
     //watch sass
-    watchSass();
+    watchSass(config);
 };
 
 tasks.sassCompile=function(config){
     compileSass(config.path);
 };
 
-tasks.sassWatch=function(){
-    watchSass();
+tasks.sassWatch=function(config){
+    watchSass(config);
 };
 
-tasks.scriptsWatch=function(){
-    watchScripts();
+tasks.scriptsWatch=function(config){
+    watchScripts(config);
 };
 
-tasks.appWatch=function(){
+tasks.appWatch=function(config){
     watchApp();
 };
 
@@ -154,14 +155,14 @@ function compileSass(config){
 
 function watchScripts(config){
     watch(config.src,function(files){
-        concatScripts();
+        concatScripts(config);
     });
 }
 
-function watchSass(){
+function watchSass(config){
     var src='./sass/**/*.scss';
     watch(src,function(files){
-        compileSass();
+        compileSass(config);
     });
 }
 
@@ -194,17 +195,44 @@ function concatScripts(config){
 }
 
 module.exports=function Tasks(config){
-    this.default=tasks.default();
-    this.startLive=tasks.startLive(config);
-    this.start=tasks.start(config);
-    this.startLiveApp=tasks.startLiveApp(config);
-    this.startApp=tasks.startApp(config);
-    this.startLiveSass=tasks.startLiveSass(config);
-    this.startSass=tasks.startSass(config);
-    this.sassCompile=tasks.sassCompile(config);
-    this.sassWatch=tasks.sassWatch();
-    this.scriptsWatch=tasks.scriptsWatch();
-    this.appWatch=tasks.appWatch();
-    this.appBuild=tasks.appBuild();
-    this.componentsBuild=tasks.componentsBuild();
+    this.config=config;
+    this.default=function(){
+        tasks.default();
+    };
+    this.startLive=function(){
+        tasks.startLive(this.config);
+    };
+    this.start=function(){
+        tasks.start(this.config);
+    };
+    this.startLiveApp=function(){
+        tasks.startLiveApp(this.config);
+    };
+    this.startApp=function(){
+        tasks.startApp(this.config);
+    };
+    this.startLiveSass=function(){
+        tasks.startLiveSass(this.config);
+    };
+    this.startSass=function(){
+        tasks.startSass(this.config);
+    };
+    this.sassCompile=function(){
+        tasks.sassCompile(this.config);
+    };
+    this.sassWatch=function(){
+        tasks.sassWatch(this.config);
+    };
+    this.scriptsWatch=function(){
+        tasks.scriptsWatch(this.config);
+    };
+    this.appWatch=function(){
+        tasks.appWatch(this.config);
+    };
+    this.appBuild=function(){
+        tasks.appBuild();
+    };
+    this.componentsBuild=function(){
+        tasks.componentsBuild();
+    };
 };
