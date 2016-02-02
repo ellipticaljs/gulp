@@ -4,14 +4,20 @@ var gulp=require('gulp'),
     sass = require('gulp-sass'),
     liveServer = require("live-server"),
     watch=require('gulp-watch'),
-    concat=require('gulp-concat');
-
+    concat=require('gulp-concat'),
+    vulcanize = require('gulp-vulcanize'),
+    inject = require('gulp-inject');
 
 
 var tasks={};
+var _config;
 
 tasks.default=function(){
-    console.log('elliptical prototype projects. Tasks: start-live|start|start-app|start-live-app|start-live-sass|start-sass|sass-compile|sass-watch|scripts-watch|app-watch|app-build|components-build');
+    var _tasks='elliptical gulp tasks: start-live|start|start-app|start-live-app|';
+    _tasks+='start-live-sass|start-sass|sass-compile|sass-watch|';
+    _tasks+='scripts-watch|app-watch|app-build|vulcanize|app-imports-watch|write-app-imports|watch-app-imports'
+    
+    console.log(_tasks);
 };
 
 tasks.startLive=function(config){
@@ -116,17 +122,24 @@ tasks.scriptsWatch=function(config){
 };
 
 tasks.appWatch=function(config){
-    watchApp();
+    watchApp(config);
 };
 
-tasks.appBuild=function(){
-    buildApp();
+tasks.appBuild=function(config){
+    buildApp(config);
 };
 
-tasks.componentsBuild=function(){
-    moveElements();
-};
+tasks.vulcanize=function(config){
+    vulcanizeImportFile(config);
+}
 
+tasks.writeAppImports=function(config){
+    writeAppImports(config);
+}
+
+tasks.watchAppImports=function(config){
+    watchAppImports(config);
+}
 
 ///private
 function startLiveServer(opts){
@@ -140,64 +153,91 @@ function startLiveServer(opts){
 }
 
 function startEcstaticServer(opts){
-    var path=__dirname + opts.path;
-    console.log(path);
+    var path=__dirname + opts.devPath;
     http.createServer(
         ecstatic({ root: path })
-    ).listen(opts.port);
+    ).listen(opts.devPort);
 }
 
 function compileSass(config){
-    gulp.src('./app.scss')
+    gulp.src(config.sassApp)
         .pipe(sass())
-        .pipe(gulp.dest(config.path + '/css'));
+        .pipe(gulp.dest(config.cssDest));
 }
 
 function watchScripts(config){
-    watch(config.src,function(files){
+    watch(config.scriptSrc,function(files){
         concatScripts(config);
     });
 }
 
 function watchSass(config){
-    var src='./sass/**/*.scss';
-    watch(src,function(files){
+    watch(config.sassSrc,function(files){
         compileSass(config);
     });
 }
 
-function buildApp(){
-    gulp.src(['./app/middleware/**/*.js','./app/app.js','./app/providers/**/*.js','./app/services/**/*.js',
-            './app/modules/**/*.js','./app/controllers/**/*.js','./app/bindings/**/*.js'])
+function getAppSrcArray(){
+    var root=_config.ellipticalScriptPath;
+    return [root + '/middleware/**/*.js',root + '/app.js',root + '/providers/**/*.js',root + '/services/**/*.js',
+            root + '/modules/**/*.js',root + '/controllers/**/*.js',root + '/bindings/**/*.js']
+}
+
+function buildApp(config){
+    gulp.src(getAppSrcArray())
         .pipe(concat('app.js'))
-        .pipe(gulp.dest('./public/scripts'));
+        .pipe(gulp.dest(config.scriptDest));
 }
 
 function watchApp(config){
-    watch(config.src,function(files){
+    watch(config.scriptSrc,function(files){
         buildApp();
     });
 }
 
-function moveElements(){
-    gulp.src('./public/elements/**/*.*')
-        .pipe(gulp.dest('./public/components'));
+function watchAppImports(config){
+    watch(config.scriptSrc,function(files){
+        writeAppImports(config);
+    });
 }
 
 
 function concatScripts(config){
-    var src=config.src;
-    var dest=config.dest;
-    var destFile=config.destFile;
+    var src=config.scriptSrc;
+    var dest=config.scriptDest;
     gulp.src(src)
-        .pipe(concat(destFile))
+        .pipe(concat('app.js'))
         .pipe(gulp.dest(dest));
 }
 
+function vulcanizeImportFile(config){
+    return gulp.src(config.importSrc + '/import.html')
+        .pipe(vulcanize({
+            abspath: '',
+            excludes: [],
+            stripExcludes: config.stripExcludes,
+            inlineScripts: config.inlineScripts
+        }))
+        .pipe(gulp.dest(config.vulcanDest));
+}
+
+function writeAppImports(config){
+    var src=getAppSrcArray();
+    var target = gulp.src(config.importSrc + '/app.html');
+    var sources = gulp.src(src, {read: false});
+     return target.pipe(inject(sources,{relative:true}))
+      .pipe(gulp.dest(config.importSrc));
+}
+
+
+
+
 module.exports=function Tasks(config){
     this.config=config;
+    _config=config;
+    
     this.default=function(){
-        tasks.default();
+        tasks.default(this.config);
     };
     this.startLive=function(){
         tasks.startLive(this.config);
@@ -230,9 +270,18 @@ module.exports=function Tasks(config){
         tasks.appWatch(this.config);
     };
     this.appBuild=function(){
-        tasks.appBuild();
+        tasks.appBuild(this.config);
     };
-    this.componentsBuild=function(){
-        tasks.componentsBuild();
+    this.vulcanize=function(){
+        tasks.vulcanize(this.config);
     };
+    this.writeAppImports=function(){
+        tasks.writeAppImports(this.config);
+    };
+    this.watchAppImports=function(){
+        tasks.writeAppImports(this.config);
+    };
+    this.appSrcArray=function(){
+        return getAppSrcArray();
+    }
 };
