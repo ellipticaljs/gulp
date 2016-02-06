@@ -25,7 +25,7 @@ tasks.startLive=function(config){
     //start server
     startLiveServer({
         port:config.livePort,
-        path:config.path,
+        path:config.livePath,
         host:config.liveHost
     });
 
@@ -38,10 +38,10 @@ tasks.startLive=function(config){
 
 tasks.start=function(config){
     //start server
-    var path=config.path;
+    var path=config.devPath;
     path=path.replace('.','');
     startEcstaticServer({
-        port:config.port,
+        port:config.devPort,
         path:path
     });
 
@@ -56,7 +56,7 @@ tasks.startLiveApp=function(config){
     //start server
     startLiveServer({
         port:config.livePort,
-        path:config.path,
+        path:config.livePath,
         host:config.liveHost
     });
 
@@ -69,10 +69,10 @@ tasks.startLiveApp=function(config){
 
 tasks.startApp=function(config){
     //start server
-    var path=config.path;
+    var path=config.devPath;
     path=path.replace('.','');
     startEcstaticServer({
-        port:config.port,
+        port:config.devPort,
         path:path
     });
 
@@ -87,7 +87,7 @@ tasks.startLiveSass=function(config){
     //start server
     startLiveServer({
         port:config.livePort,
-        path:config.path,
+        path:config.livePath,
         host:config.liveHost
     });
 
@@ -97,10 +97,10 @@ tasks.startLiveSass=function(config){
 
 tasks.startSass=function(config){
     //start server
-    var path=config.path;
+    var path=config.devPath;
     path=path.replace('.','');
     startEcstaticServer({
-        port:config.port,
+        port:config.devPort,
         path:path
     });
 
@@ -153,10 +153,10 @@ function startLiveServer(opts){
 }
 
 function startEcstaticServer(opts){
-    var path=__dirname + opts.devPath;
+    var path=__dirname + opts.path;
     http.createServer(
         ecstatic({ root: path })
-    ).listen(opts.devPort);
+    ).listen(opts.port);
 }
 
 function compileSass(config){
@@ -191,7 +191,7 @@ function buildApp(config){
 
 function watchApp(config){
     watch(config.scriptSrc,function(files){
-        buildApp();
+        buildApp(config);
     });
 }
 
