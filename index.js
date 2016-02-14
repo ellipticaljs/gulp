@@ -15,7 +15,7 @@ var _config;
 tasks.default=function(){
     var _tasks='elliptical gulp tasks: start-live|start|start-app|start-live-app|';
     _tasks+='start-live-sass|start-sass|sass-compile|sass-watch|';
-    _tasks+='scripts-watch|app-watch|app-build|vulcanize|app-watch-imports|app-write-imports
+    _tasks+='scripts-watch|app-watch|app-build|vulcanize|app-watch-imports|app-write-imports';
     
     console.log(_tasks);
 };
