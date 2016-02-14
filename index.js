@@ -13,11 +13,34 @@ var tasks={};
 var _config;
 
 tasks.default=function(){
-    var _tasks='elliptical gulp tasks: start-live|start|start-app|start-live-app|';
-    _tasks+='start-live-sass|start-sass|sass-compile|sass-watch|';
-    _tasks+='scripts-watch|app-watch|app-build|vulcanize|app-watch-imports|app-write-imports';
+    var _tasks='elliptical gulp tasks: ';
+    _tasks+='start-live-server|start-server|start-live|start|start-app|start-live-app|';
+    _tasks+='start-live-sass|start-sass|start-live-app-no-sass|start-app-no-sass|start-live-scripts|start-scripts|';
+    _tasks+='sass-compile|sass-watch|scripts-watch|app-watch|app-build|scripts-build|';
+    _tasks+= 'vulcanize|app-watch-imports|app-build-imports';
     
     console.log(_tasks);
+};
+
+tasks.startLiveServer=function(config){
+
+    //start live server
+    startLiveServer({
+        port:config.livePort,
+        path:config.livePath,
+        host:config.liveHost
+    });
+};
+
+tasks.startServer=function(config){
+    //start server
+    var path=config.devPath;
+    path=path.replace('.','');
+    startEcstaticServer({
+        port:config.devPort,
+        path:path
+    });
+
 };
 
 tasks.startLive=function(config){
@@ -51,6 +74,8 @@ tasks.start=function(config){
     //watch sass
     watchSass(config);
 };
+
+
 
 tasks.startLiveApp=function(config){
     //start server
@@ -109,6 +134,57 @@ tasks.startSass=function(config){
     watchSass(config);
 };
 
+tasks.startLiveAppNoSass=function(config){
+    //start server
+    startLiveServer({
+        port:config.livePort,
+        path:config.livePath,
+        host:config.liveHost
+    });
+
+    //watch app
+    watchApp(config);
+};
+
+tasks.startAppNoSass=function(config){
+    //start server
+    var path=config.devPath;
+    path=path.replace('.','');
+    startEcstaticServer({
+        port:config.devPort,
+        path:path
+    });
+
+    //watch app
+    watchApp(config);
+};
+
+tasks.startLiveScripts=function(config){
+    //start server
+    startLiveServer({
+        port:config.livePort,
+        path:config.livePath,
+        host:config.liveHost
+    });
+
+    //watch scripts
+    watchScripts(config);
+};
+
+tasks.startScripts=function(config){
+    //start server
+    var path=config.devPath;
+    path=path.replace('.','');
+    startEcstaticServer({
+        port:config.devPort,
+        path:path
+    });
+
+    //watch scripts
+    watchScripts(config);
+};
+
+
 tasks.sassCompile=function(config){
     compileSass(config.path);
 };
@@ -129,15 +205,19 @@ tasks.appBuild=function(config){
     buildApp(config);
 };
 
+tasks.scriptsBuild=function(config){
+    concatScripts(config);
+};
+
 tasks.vulcanize=function(config){
     vulcanizeImportFile(config);
 };
 
-tasks.AppWriteImports=function(config){
+tasks.appBuildImports=function(config){
     writeAppImports(config);
 };
 
-tasks.AppWatchImports=function(config){
+tasks.appWatchImports=function(config){
     watchAppImports(config);
 };
 
@@ -178,7 +258,7 @@ function watchSass(config){
 }
 
 function getAppSrcArray(){
-    var root=_config.ellipticalScriptPath;
+    var root=_config.appScriptPath;
     return [root + '/middleware/**/*.js',root + '/app.js',root + '/providers/**/*.js',root + '/services/**/*.js',
             root + '/modules/**/*.js',root + '/controllers/**/*.js',root + '/bindings/**/*.js']
 }
@@ -239,6 +319,12 @@ module.exports=function Tasks(config){
     this.default=function(){
         tasks.default(this.config);
     };
+    this.startLiveServer=function(){
+        tasks.startLiveServer(this.config);
+    };
+    this.startServer=function(){
+        tasks.startServer(this.config);
+    };
     this.startLive=function(){
         tasks.startLive(this.config);
     };
@@ -257,6 +343,18 @@ module.exports=function Tasks(config){
     this.startSass=function(){
         tasks.startSass(this.config);
     };
+    this.startLiveAppNoSass=function(){
+        tasks.startLiveAppNoSass(this.config);
+    };
+    this.startAppNoSass=function(){
+        tasks.startAppNoSass(this.config);
+    };
+    this.startLiveScripts=function(){
+        tasks.startLiveScripts(this.config);
+    };
+    this.startScripts=function(){
+        tasks.startScripts(this.config);
+    };
     this.sassCompile=function(){
         tasks.sassCompile(this.config);
     };
@@ -272,14 +370,17 @@ module.exports=function Tasks(config){
     this.appBuild=function(){
         tasks.appBuild(this.config);
     };
+    this.scriptsBuild=function(){
+        tasks.scriptsBuild(this.config);
+    };
     this.vulcanize=function(){
         tasks.vulcanize(this.config);
     };
-    this.AppWriteImports=function(){
-        tasks.writeAppImports(this.config);
+    this.appBuildImports=function(){
+        tasks.appBuildImports(this.config);
     };
-    this.AppWatchImports=function(){
-        tasks.writeAppImports(this.config);
+    this.appWatchImports=function(){
+        tasks.appWatchImports(this.config);
     };
     this.appSrcArray=function(){
         return getAppSrcArray();
