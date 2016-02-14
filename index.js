@@ -15,7 +15,7 @@ var _config;
 tasks.default=function(){
     var _tasks='elliptical gulp tasks: start-live|start|start-app|start-live-app|';
     _tasks+='start-live-sass|start-sass|sass-compile|sass-watch|';
-    _tasks+='scripts-watch|app-watch|app-build|vulcanize|app-imports-watch|write-app-imports|watch-app-imports'
+    _tasks+='scripts-watch|app-watch|app-build|vulcanize|app-watch-imports|app-write-imports
     
     console.log(_tasks);
 };
@@ -131,15 +131,15 @@ tasks.appBuild=function(config){
 
 tasks.vulcanize=function(config){
     vulcanizeImportFile(config);
-}
+};
 
-tasks.writeAppImports=function(config){
+tasks.AppWriteImports=function(config){
     writeAppImports(config);
-}
+};
 
-tasks.watchAppImports=function(config){
+tasks.AppWatchImports=function(config){
     watchAppImports(config);
-}
+};
 
 ///private
 function startLiveServer(opts){
@@ -275,10 +275,10 @@ module.exports=function Tasks(config){
     this.vulcanize=function(){
         tasks.vulcanize(this.config);
     };
-    this.writeAppImports=function(){
+    this.AppWriteImports=function(){
         tasks.writeAppImports(this.config);
     };
-    this.watchAppImports=function(){
+    this.AppWatchImports=function(){
         tasks.writeAppImports(this.config);
     };
     this.appSrcArray=function(){

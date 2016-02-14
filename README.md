@@ -1,13 +1,18 @@
 # Elliptical Gulp
 
-## Tasks
+## Gulp Task Api
 
 ```bash
-# starts live server, watches scripts,sass
-gulp start-live
+# variables
+var config=require('./config.json');
+var Tasks=require('elliptical-gulp');
+var gulp=require('gulp');
 
-# start server, watches scripts,sass
-gulp start
+# task object
+var tasks=new Tasks(config);
+
+
+
 
  
 
