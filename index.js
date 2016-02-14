@@ -186,7 +186,7 @@ tasks.startScripts=function(config){
 
 
 tasks.sassCompile=function(config){
-    compileSass(config.path);
+    compileSass(config);
 };
 
 tasks.sassWatch=function(config){
