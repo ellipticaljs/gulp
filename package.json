@@ -1,7 +1,7 @@
 {
   "name": "elliptical-gulp",
   "description": "Gulp tasks for elliptical starter projects",
-  "version": "1.1.6",
+  "version": "1.1.7",
   "author": "S. Francis",
   "license": "MIT",
   "repository": {
@@ -19,6 +19,8 @@
     "gulp-watch": "^1.0.7",
     "gulp-inject": "^3.0.0",
     "gulp-minify-inline": "^0.1.1",
-    "gulp-vulcanize": "^6.1.0"
+    "gulp-vulcanize": "^6.1.0",
+    "elliptical-ecstatic": "^0.5.5",
+    "live-server": "^0.7.0"
   }
 }
