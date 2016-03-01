@@ -391,7 +391,7 @@ module.exports=function Tasks(config){
         tasks.appWatchImports(this.config);
     };
     this.watch=function(){
-        tasks.watch(config);
+        tasks.watch(this.config);
     };
     this.appSrcArray=function(){
         return getAppSrcArray();
