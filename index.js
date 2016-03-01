@@ -86,7 +86,7 @@ tasks.startLiveApp=function(config){
     });
 
     //watch app
-    watchApp(config);
+    watchAppImports(config);
 
     //watch sass
     watchSass(config);
@@ -102,7 +102,7 @@ tasks.startApp=function(config){
     });
 
     //watch app
-    watchApp(config);
+    watchAppImports(config);
 
     //watch sass
     watchSass(config);
@@ -221,6 +221,10 @@ tasks.appWatchImports=function(config){
     watchAppImports(config);
 };
 
+tasks.watch=function(config){
+    watchSassAndImports(config);
+};
+
 ///private
 function startLiveServer(opts){
     var params={
@@ -281,6 +285,10 @@ function watchAppImports(config){
     });
 }
 
+function watchSassAndImports(config){
+    watchSass(config);
+    watchAppImports(config);
+}
 
 function concatScripts(config){
     var src=config.scriptSrc;
@@ -381,6 +389,9 @@ module.exports=function Tasks(config){
     };
     this.appWatchImports=function(){
         tasks.appWatchImports(this.config);
+    };
+    this.watch=function(){
+        tasks.watch(config);
     };
     this.appSrcArray=function(){
         return getAppSrcArray();

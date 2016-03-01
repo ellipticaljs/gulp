@@ -127,6 +127,11 @@ gulp.task('app-watch-imports', function () {
     tasks.appWatchImports();
 });
 
+# watch sass and the javascript app to build the app html imports file
+gulp.task('watch', function () {
+    tasks.watch();
+});
+
 ```
 
 
