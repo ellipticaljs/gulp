@@ -18,7 +18,8 @@ tasks.default=function(){
     _tasks+='start-live-sass|start-sass|start-live-app-no-sass|start-app-no-sass|start-live-scripts|start-scripts|';
     _tasks+='sass-compile|sass-watch|scripts-watch|app-watch|app-build|scripts-build|';
     _tasks+= 'vulcanize|app-watch-imports|app-build-imports';
-    
+    _tasks+='app-scaffold';
+
     console.log(_tasks);
 };
 
@@ -225,6 +226,10 @@ tasks.watch=function(config){
     watchSassAndImports(config);
 };
 
+tasks.appScaffold=function(config){
+    scaffoldApp(config);
+};
+
 ///private
 function startLiveServer(opts){
     var params={
@@ -262,9 +267,9 @@ function watchSass(config){
 }
 
 function getAppSrcArray(){
-    var root=_config.appScriptPath;
+    var root=_config.appPath;
     return [root + '/middleware/**/*.js',root + '/app.js',root + '/providers/**/*.js',root + '/services/**/*.js',
-            root + '/modules/**/*.js',root + '/controllers/**/*.js',root + '/bindings/**/*.js']
+        root + '/modules/**/*.js',root + '/controllers/**/*.js',root + '/bindings/**/*.js']
 }
 
 function buildApp(config){
@@ -313,17 +318,20 @@ function writeAppImports(config){
     var src=getAppSrcArray();
     var target = gulp.src(config.importSrc + '/app.html');
     var sources = gulp.src(src, {read: false});
-     return target.pipe(inject(sources,{relative:true}))
-      .pipe(gulp.dest(config.importSrc));
+    return target.pipe(inject(sources,{relative:true}))
+        .pipe(gulp.dest(config.importSrc));
 }
 
-
+function scaffoldApp(config){
+    gulp.src('./node_modules/elliptical-gulp/templates/app/**/*.*')
+        .pipe(gulp.dest(config.appPath));
+}
 
 
 module.exports=function Tasks(config){
     this.config=config;
     _config=config;
-    
+
     this.default=function(){
         tasks.default(this.config);
     };
@@ -393,7 +401,10 @@ module.exports=function Tasks(config){
     this.watch=function(){
         tasks.watch(this.config);
     };
+    this.appScaffold=function(){
+        tasks.appScaffold(config);
+    };
     this.appSrcArray=function(){
         return getAppSrcArray();
-    }
+    };
 };
