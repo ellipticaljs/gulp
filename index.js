@@ -267,7 +267,7 @@ function watchSass(config){
 }
 
 function getAppSrcArray(){
-    var root=_config.appPath;
+    var root=_config.appScriptPath;
     return [root + '/middleware/**/*.js',root + '/app.js',root + '/providers/**/*.js',root + '/services/**/*.js',
         root + '/modules/**/*.js',root + '/controllers/**/*.js',root + '/bindings/**/*.js']
 }
