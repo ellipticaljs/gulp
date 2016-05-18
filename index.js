@@ -17,7 +17,7 @@ tasks.default=function(){
     _tasks+='start-live-server|start-server|start-live|start|start-app|start-live-app|';
     _tasks+='start-live-sass|start-sass|start-live-app-no-sass|start-app-no-sass|start-live-scripts|start-scripts|';
     _tasks+='sass-compile|sass-watch|scripts-watch|app-watch|app-build|scripts-build|';
-    _tasks+= 'vulcanize|app-watch-imports|app-build-imports';
+    _tasks+= 'vulcanize|app-watch-imports|app-build-imports|';
     _tasks+='app-scaffold';
 
     console.log(_tasks);
