@@ -17,8 +17,8 @@ tasks.default=function(){
     _tasks+='start-live-server|start-server|start-live|start|start-app|start-live-app|';
     _tasks+='start-live-sass|start-sass|start-live-app-no-sass|start-app-no-sass|start-live-scripts|start-scripts|';
     _tasks+='sass-compile|sass-watch|scripts-watch|app-watch|app-build|scripts-build|';
-    _tasks+= 'vulcanize|app-watch-imports|app-build-imports|';
-    _tasks+='app-scaffold';
+    _tasks+= 'app-watch-imports|app-build-imports|';
+    _tasks+='app-scaffold|vulcanize|vulcanize-min';
 
     console.log(_tasks);
 };
@@ -214,6 +214,10 @@ tasks.vulcanize=function(config){
     vulcanizeImportFile(config);
 };
 
+tasks.vulcanizeMin=function(config){
+    vulcanizeAndMinifyImportFile(config);
+};
+
 tasks.appBuildImports=function(config){
     writeAppImports(config);
 };
@@ -327,6 +331,12 @@ function scaffoldApp(config){
         .pipe(gulp.dest(config.appPath));
 }
 
+function vulcanizeAndMinifyImportFile(config){
+    return gulp.src(config.vulcanDest + "/import.html")
+        .pipe(minifyInline())
+        .pipe(gulp.dest(config.vulcanDest));
+}
+
 
 module.exports=function Tasks(config){
     this.config=config;
@@ -391,6 +401,9 @@ module.exports=function Tasks(config){
     };
     this.vulcanize=function(){
         tasks.vulcanize(this.config);
+    };
+    this.vulcanizeMin=function(){
+        tasks.vulcanizeMin(config);
     };
     this.appBuildImports=function(){
         tasks.appBuildImports(this.config);
