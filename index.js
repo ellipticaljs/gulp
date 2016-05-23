@@ -6,7 +6,8 @@ var gulp=require('gulp'),
     watch=require('gulp-watch'),
     concat=require('gulp-concat'),
     vulcanize = require('gulp-vulcanize'),
-    inject = require('gulp-inject');
+    inject = require('gulp-inject'),
+    minifyInline=require('gulp-minify-inline');
 
 
 var tasks={};
