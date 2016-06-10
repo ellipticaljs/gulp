@@ -98,7 +98,7 @@ gulp.task('copy-config', function () {
 
 ## es2015,es7 supported presets and plugins
 
-### es2015 presets
+#### es2015 presets
 ### stage-3 presets
 ### es2015 module plugin
 ### legacy decorators plugin
