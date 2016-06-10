@@ -1,6 +1,6 @@
 # Elliptical Gulp
 
-## Gulp Task Api
+## Elliptical Gulp Task Api
 
 ```bash
 # variables
@@ -17,71 +17,27 @@ var tasks=new Tasks(config);
 
 ``` bash
 
-# start live server
-gulp.task('start-live-server',function(){
-    tasks.startLiveServer();
-});
-
-# start dev server
+# start live server only
 gulp.task('start-server',function(){
     tasks.startServer();
 });
 
-# start live server, watch scripts, watch sass
-gulp.task('start-live',function(){
-    tasks.startLive();
-});
-
-# start dev server, watch scripts, watch sass
+# start server, watch sass
 gulp.task('start',function(){
     tasks.start();
 });
 
-# start live server, watch javascript app, watch sass
-gulp.task('start-live-app',function(){
-    tasks.startLiveApp();
-});
-
-# start dev server, watch javascript app, watch sass
+# start server, watch sass, watch app
 gulp.task('start-app',function(){
     tasks.startApp();
 });
 
-
-# start live server, watch sass
-gulp.task('start-live-sass',function(){
-    tasks.startLiveSass();
-});
-
-
-# start dev server, watch sass
-gulp.task('start-sass',function(){
-    tasks.startSass();
-});
-
-
-# start live server, watch app only
-gulp.task('start-live-app-no-sass',function(){
-    tasks.startLiveAppNoSass();
-});
-
-# start dev server, watch app only
+# start server, watch app only
 gulp.task('start-app-no-sass',function(){
     tasks.startAppNoSass();
 });
 
-# start live server, watch scripts only
-gulp.task('start-live-scripts',function(){
-    tasks.startLiveScripts();
-});
-
-# start dev server, watch scripts only
-gulp.task('start-scripts',function(){
-    tasks.startScripts();
-});
-
-
-# one-time sass compile
+# compile sass
 gulp.task('sass-compile', function () {
     tasks.sassCompile();
 });
@@ -91,24 +47,34 @@ gulp.task('sass-watch', function () {
     tasks.sassWatch();
 });
 
-# watch scripts
-gulp.task('scripts-watch', function () {
-    tasks.scriptsWatch();
-});
-
-# build scripts
-gulp.task('scripts-build', function () {
-    tasks.scriptsBuild();
-});
-
-# watch javascript app
+# watch app
 gulp.task('app-watch', function () {
     tasks.appWatch();
 });
 
-# build javascript app
+# build app(babel transpile)
 gulp.task('app-build', function () {
     tasks.appBuild();
+});
+
+# build app html imports only
+gulp.task('app-imports', function () {
+    tasks.appImports();
+});
+
+# scaffold a new app skeleton
+gulp.task('app-scaffold', function () {
+    tasks.appImports();
+});
+
+# watch sass, watch app
+gulp.task('watch', function () {
+    tasks.watch();
+});
+
+# clean the transpiled bin directory
+gulp.task('app-clean', function () {
+    tasks.appClean();
 });
 
 # vulcanize html imports
@@ -116,21 +82,17 @@ gulp.task('vulcanize', function () {
     tasks.vulcanize();
 });
 
-# build html imports file for the javascript app files
-gulp.task('app-build-imports', function () {
-    tasks.appBuildImports();
+# min vulcanized file
+gulp.task('vulcanize-min', function () {
+    tasks.vulcanizeMin();
+});
+
+# copy default config file,.babelrc to project root
+gulp.task('copy-config', function () {
+    tasks.copyConfig();
 });
 
 
-# watch the javascript app to build the app html imports file
-gulp.task('app-watch-imports', function () {
-    tasks.appWatchImports();
-});
-
-# watch sass and the javascript app to build the app html imports file
-gulp.task('watch', function () {
-    tasks.watch();
-});
 
 ```
 
@@ -157,20 +119,11 @@ devPath
 # dev server port
 devPort
 
-# live server port
-livePort
-
-# live server root path
-livePath
-
-# live host
-liveHost
-
-# app scripts pah
+# app src scripts pah
 appScriptPath
 
-# scripts src path
-scriptSrc
+# app bin output path
+binScriptPath
 
 # scripts dest path
 scriptDest
@@ -186,6 +139,9 @@ stripExcludes
 
 # inline scripts in vulcanized file
 inlineScripts
+
+# inline css in vulcanized file
+inlineCss
 
 
 ```

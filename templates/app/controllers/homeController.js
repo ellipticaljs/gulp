@@ -1,12 +1,7 @@
-elliptical.module=(function(app){
-    var container=app.container;
-    var controller=new elliptical.Controller(app,'Home');
-    controller('/@action',{
-        Index:function(req,res,next){
-            res.render();
-        }
+import elliptical from "../references/elliptical";
 
-    });
-
-    return app;
-})(elliptical.module);
+export default class Controller extends elliptical.Controller {
+    Index(req, res, next) {
+        res.render();
+    }
+}

@@ -1,9 +1,7 @@
-elliptical.module=(function(app){
-    var container=app.container;
 
-    elliptical.binding('sample',function(node){
-        console.log('sample');
-    });
+import elliptical from '../references/elliptical';
 
-    return app;
-})(elliptical.module);
+elliptical.binding('to-label', function (node) {
+    console.log('sample');
+
+});

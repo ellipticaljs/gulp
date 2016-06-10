@@ -1,241 +1,147 @@
 var gulp=require('gulp'),
     http = require('http'),
-    ecstatic = require('elliptical-ecstatic'),
     sass = require('gulp-sass'),
     liveServer = require("live-server"),
     watch=require('gulp-watch'),
     concat=require('gulp-concat'),
     vulcanize = require('gulp-vulcanize'),
     inject = require('gulp-inject'),
+    del =require('del'),
+    babel=require('gulp-babel'),
+    runSequence = require('run-sequence'),
     minifyInline=require('gulp-minify-inline');
 
 
 var tasks={};
 var _config;
 
+//--internal------------------------------------------------------------------------------------------------------------
 tasks.default=function(){
     var _tasks='elliptical gulp tasks: ';
-    _tasks+='start-live-server|start-server|start-live|start|start-app|start-live-app|';
-    _tasks+='start-live-sass|start-sass|start-live-app-no-sass|start-app-no-sass|start-live-scripts|start-scripts|';
-    _tasks+='sass-compile|sass-watch|scripts-watch|app-watch|app-build|scripts-build|';
-    _tasks+= 'app-watch-imports|app-build-imports|';
-    _tasks+='app-scaffold|vulcanize|vulcanize-min';
+    _tasks+='start-server|start|start-app|start-app-no-sass|', 
+    _tasks+='sass-compile|sass-watch|';
+    _tasks+='app-build|app-watch|app-imports|app-clean|app-scaffold|',
+    _tasks+='watch|copy-config|',
+    _tasks+='vulcanize|vulcanize-min';
 
     console.log(_tasks);
 };
 
-tasks.startLiveServer=function(config){
+//live server only
+tasks.startServer=function(config){
 
     //start live server
     startLiveServer({
-        port:config.livePort,
-        path:config.livePath,
-        host:config.liveHost
-    });
-};
-
-tasks.startServer=function(config){
-    //start server
-    var path=config.devPath;
-    path=path.replace('.','');
-    startEcstaticServer({
         port:config.devPort,
-        path:path
+        path:config.devPath,
+        host:config.devHost
     });
-
 };
 
-tasks.startLive=function(config){
-
-    //start server
-    startLiveServer({
-        port:config.livePort,
-        path:config.livePath,
-        host:config.liveHost
-    });
-
-    //watch scripts
-    watchScripts(config);
-
-    //watch sass
-    watchSass(config);
-};
-
+//start live server, watch sass
 tasks.start=function(config){
-    //start server
-    var path=config.devPath;
-    path=path.replace('.','');
-    startEcstaticServer({
-        port:config.devPort,
-        path:path
-    });
 
-    //watch scripts
-    watchScripts(config);
-
-    //watch sass
-    watchSass(config);
-};
-
-
-
-tasks.startLiveApp=function(config){
     //start server
     startLiveServer({
-        port:config.livePort,
-        path:config.livePath,
-        host:config.liveHost
+        port:config.devPort,
+        path:config.devPath,
+        host:config.devHost
     });
-
-    //watch app
-    watchAppImports(config);
 
     //watch sass
     watchSass(config);
 };
 
+//start live server,watch sass,watch app
 tasks.startApp=function(config){
     //start server
-    var path=config.devPath;
-    path=path.replace('.','');
-    startEcstaticServer({
-        port:config.devPort,
-        path:path
-    });
-
-    //watch app
-    watchAppImports(config);
-
-    //watch sass
-    watchSass(config);
-};
-
-tasks.startLiveSass=function(config){
-    //start server
     startLiveServer({
-        port:config.livePort,
-        path:config.livePath,
-        host:config.liveHost
-    });
-
-    //watch sass
-    watchSass(config);
-};
-
-tasks.startSass=function(config){
-    //start server
-    var path=config.devPath;
-    path=path.replace('.','');
-    startEcstaticServer({
         port:config.devPort,
-        path:path
-    });
-
-
-    //watch sass
-    watchSass(config);
-};
-
-tasks.startLiveAppNoSass=function(config){
-    //start server
-    startLiveServer({
-        port:config.livePort,
-        path:config.livePath,
-        host:config.liveHost
+        path:config.devPath,
+        host:config.devHost
     });
 
     //watch app
     watchApp(config);
+
+    //watch sass
+    watchSass(config);
 };
 
+
+//start live server,watch app
 tasks.startAppNoSass=function(config){
     //start server
-    var path=config.devPath;
-    path=path.replace('.','');
-    startEcstaticServer({
+    startLiveServer({
         port:config.devPort,
-        path:path
+        path:config.devPath,
+        host:config.devHost
     });
 
     //watch app
     watchApp(config);
 };
 
-tasks.startLiveScripts=function(config){
-    //start server
-    startLiveServer({
-        port:config.livePort,
-        path:config.livePath,
-        host:config.liveHost
-    });
-
-    //watch scripts
-    watchScripts(config);
-};
-
-tasks.startScripts=function(config){
-    //start server
-    var path=config.devPath;
-    path=path.replace('.','');
-    startEcstaticServer({
-        port:config.devPort,
-        path:path
-    });
-
-    //watch scripts
-    watchScripts(config);
-};
-
-
+//compile sass
 tasks.sassCompile=function(config){
     compileSass(config);
 };
 
+//watch sass
 tasks.sassWatch=function(config){
     watchSass(config);
 };
 
-tasks.scriptsWatch=function(config){
-    watchScripts(config);
-};
-
+//watch app
 tasks.appWatch=function(config){
     watchApp(config);
 };
 
+//build app
 tasks.appBuild=function(config){
     buildApp(config);
 };
 
-tasks.scriptsBuild=function(config){
-    concatScripts(config);
+//write app imports
+tasks.appImports=function(config){
+    writeAppImports();
 };
 
-tasks.vulcanize=function(config){
-    vulcanizeImportFile(config);
-};
-
-tasks.vulcanizeMin=function(config){
-    vulcanizeAndMinifyImportFile(config);
-};
-
-tasks.appBuildImports=function(config){
-    writeAppImports(config);
-};
-
-tasks.appWatchImports=function(config){
-    watchAppImports(config);
-};
-
+//watch app, watch sass
 tasks.watch=function(config){
-    watchSassAndImports(config);
+    watchSass(config);
+    watchApp(config);
 };
 
+//app scaffold
 tasks.appScaffold=function(config){
     scaffoldApp(config);
 };
 
-///private
+//clean app bin
+tasks.appClean=function(config){
+    deleteAppBinDirectoryFiles(config);
+};
+
+//copy config
+tasks.copyConfig=function(config){
+    copyConfig();
+};
+
+//vulcanize
+tasks.vulcanize=function(config){
+    vulcanizeImportFile(config);
+};
+
+//vulcanize min
+tasks.vulcanizeMin=function(config){
+    vulcanizeAndMinifyImportFile(config);
+};
+
+
+
+
+///--private------------------------------------------------------------------------------------------------------------
 function startLiveServer(opts){
     var params={
         port:opts.port,
@@ -246,24 +152,6 @@ function startLiveServer(opts){
     liveServer.start(params);
 }
 
-function startEcstaticServer(opts){
-    var path=__dirname + opts.path;
-    http.createServer(
-        ecstatic({ root: path })
-    ).listen(opts.port);
-}
-
-function compileSass(config){
-    gulp.src(config.sassApp)
-        .pipe(sass())
-        .pipe(gulp.dest(config.cssDest));
-}
-
-function watchScripts(config){
-    watch(config.scriptSrc,function(files){
-        concatScripts(config);
-    });
-}
 
 function watchSass(config){
     watch(config.sassSrc,function(files){
@@ -271,41 +159,23 @@ function watchSass(config){
     });
 }
 
-function getAppSrcArray(){
-    var root=_config.appScriptPath;
-    return [root + '/middleware/**/*.js',root + '/app.js',root + '/providers/**/*.js',root + '/services/**/*.js',
-        root + '/modules/**/*.js',root + '/controllers/**/*.js',root + '/bindings/**/*.js']
+function getAppSrcArray(root){
+    return [root + '/references/**/*.js',root + '/dependencies/**/*.js',
+        root + '/providers/**/*.js',root + '/services/**/*.js',
+        root + '/middleware/**/*.js',root + '/modules/**/*.js',
+        root + '/controllers/**/*.js',root + '/bindings/**/*.js',root + '/startup.js',root + '/app.js']
 }
 
 function buildApp(config){
-    gulp.src(getAppSrcArray())
-        .pipe(concat('app.js'))
-        .pipe(gulp.dest(config.scriptDest));
+    deleteAppBinDirectoryFiles(config);
+    transpileApp();
 }
 
 function watchApp(config){
-    watch(config.scriptSrc,function(files){
+    var root=config.appScriptPath;
+    watch(root + '/**/*.js',function(files){
         buildApp(config);
     });
-}
-
-function watchAppImports(config){
-    watch(config.scriptSrc,function(files){
-        writeAppImports(config);
-    });
-}
-
-function watchSassAndImports(config){
-    watchSass(config);
-    watchAppImports(config);
-}
-
-function concatScripts(config){
-    var src=config.scriptSrc;
-    var dest=config.scriptDest;
-    gulp.src(src)
-        .pipe(concat('app.js'))
-        .pipe(gulp.dest(dest));
 }
 
 function vulcanizeImportFile(config){
@@ -314,17 +184,34 @@ function vulcanizeImportFile(config){
             abspath: '',
             excludes: [],
             stripExcludes: config.stripExcludes,
-            inlineScripts: config.inlineScripts
+            inlineScripts: config.inlineScripts,
+            inlineCss: config.inlineCss
         }))
         .pipe(gulp.dest(config.vulcanDest));
 }
 
-function writeAppImports(config){
-    var src=getAppSrcArray();
-    var target = gulp.src(config.importSrc + '/app.html');
+function deleteAppBinDirectoryFiles(config){
+    var root=config.binScriptPath;
+    del.sync([root + '/**', '!' + root]);
+}
+
+function transpileApp(){
+    var root=_config.appScriptPath;
+    var outputRoot=_config.binScriptPath;
+    return gulp.src(root + '/**/*.js')
+        .pipe(babel())
+        .pipe(gulp.dest(outputRoot))
+        .on('end',writeAppImports);
+
+}
+
+function writeAppImports(){
+    var root=_config.binScriptPath;
+    var src=getAppSrcArray(root);
+    var target = gulp.src(_config.importSrc + '/app.html');
     var sources = gulp.src(src, {read: false});
     return target.pipe(inject(sources,{relative:true}))
-        .pipe(gulp.dest(config.importSrc));
+        .pipe(gulp.dest(_config.importSrc));
 }
 
 function scaffoldApp(config){
@@ -338,7 +225,12 @@ function vulcanizeAndMinifyImportFile(config){
         .pipe(gulp.dest(config.vulcanDest));
 }
 
+function copyConfig(){
+    gulp.src(['./node_modules/elliptical-gulp/templates/config/config.json','./node_modules/elliptical-gulp/templates/config/.babelrc'])
+        .pipe(gulp.dest('./'));
+}
 
+//--public--------------------------------------------------------------------------------------------------------------
 module.exports=function Tasks(config){
     this.config=config;
     _config=config;
@@ -346,41 +238,17 @@ module.exports=function Tasks(config){
     this.default=function(){
         tasks.default(this.config);
     };
-    this.startLiveServer=function(){
-        tasks.startLiveServer(this.config);
+    this.start=function(){
+        tasks.start(this.config);
     };
     this.startServer=function(){
         tasks.startServer(this.config);
     };
-    this.startLive=function(){
-        tasks.startLive(this.config);
-    };
-    this.start=function(){
-        tasks.start(this.config);
-    };
-    this.startLiveApp=function(){
-        tasks.startLiveApp(this.config);
-    };
     this.startApp=function(){
         tasks.startApp(this.config);
     };
-    this.startLiveSass=function(){
-        tasks.startLiveSass(this.config);
-    };
-    this.startSass=function(){
-        tasks.startSass(this.config);
-    };
-    this.startLiveAppNoSass=function(){
-        tasks.startLiveAppNoSass(this.config);
-    };
     this.startAppNoSass=function(){
         tasks.startAppNoSass(this.config);
-    };
-    this.startLiveScripts=function(){
-        tasks.startLiveScripts(this.config);
-    };
-    this.startScripts=function(){
-        tasks.startScripts(this.config);
     };
     this.sassCompile=function(){
         tasks.sassCompile(this.config);
@@ -388,17 +256,23 @@ module.exports=function Tasks(config){
     this.sassWatch=function(){
         tasks.sassWatch(this.config);
     };
-    this.scriptsWatch=function(){
-        tasks.scriptsWatch(this.config);
-    };
-    this.appWatch=function(){
-        tasks.appWatch(this.config);
-    };
     this.appBuild=function(){
         tasks.appBuild(this.config);
     };
-    this.scriptsBuild=function(){
-        tasks.scriptsBuild(this.config);
+    this.appImports=function(){
+        tasks.appImports(this.config);
+    };
+    this.appWatch=function(){
+        tasks.appWatchImports(this.config);
+    };
+    this.watch=function(){
+        tasks.watch(this.config);
+    };
+    this.appScaffold=function(){
+        tasks.appScaffold(this.config);
+    };
+    this.appClean=function(){
+        tasks.appClean(this.config);
     };
     this.vulcanize=function(){
         tasks.vulcanize(this.config);
@@ -406,19 +280,11 @@ module.exports=function Tasks(config){
     this.vulcanizeMin=function(){
         tasks.vulcanizeMin(config);
     };
-    this.appBuildImports=function(){
-        tasks.appBuildImports(this.config);
+    this.copyConfig=function(){
+        tasks.copyConfig();
     };
-    this.appWatchImports=function(){
-        tasks.appWatchImports(this.config);
+    this.appSrcArray=function(root){
+        return getAppSrcArray(root);
     };
-    this.watch=function(){
-        tasks.watch(this.config);
-    };
-    this.appScaffold=function(){
-        tasks.appScaffold(config);
-    };
-    this.appSrcArray=function(){
-        return getAppSrcArray();
-    };
+
 };
