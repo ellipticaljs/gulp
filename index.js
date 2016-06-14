@@ -159,6 +159,12 @@ function watchSass(config){
     });
 }
 
+function compileSass(config){
+    gulp.src(config.sassApp)
+        .pipe(sass())
+        .pipe(gulp.dest(config.cssDest));
+}
+
 function getAppSrcArray(root){
     return [root + '/references/**/*.js',root + '/dependencies/**/*.js',
         root + '/providers/**/*.js',root + '/services/**/*.js',
