@@ -42,6 +42,11 @@ gulp.task('sass-compile', function () {
     tasks.sassCompile();
 });
 
+# compile sass and min css
+gulp.task('sass-compile-min', function () {
+    tasks.sassCompileMin();
+});
+
 # watch sass
 gulp.task('sass-watch', function () {
     tasks.sassWatch();
@@ -62,10 +67,6 @@ gulp.task('app-imports', function () {
     tasks.appImports();
 });
 
-# scaffold a new app skeleton
-gulp.task('app-scaffold', function () {
-    tasks.appImports();
-});
 
 # watch sass, watch app
 gulp.task('watch', function () {

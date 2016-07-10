@@ -8,7 +8,7 @@ var gulp=require('gulp'),
     inject = require('gulp-inject'),
     del =require('del'),
     babel=require('gulp-babel'),
-    runSequence = require('run-sequence'),
+    minify = require('gulp-minify-css'),
     minifyInline=require('gulp-minify-inline');
 
 
@@ -18,10 +18,10 @@ var _config;
 //--internal------------------------------------------------------------------------------------------------------------
 tasks.default=function(){
     var _tasks='elliptical gulp tasks: ';
-    _tasks+='start-server|start|start-app|start-app-no-sass|', 
-    _tasks+='sass-compile|sass-watch|';
-    _tasks+='app-build|app-watch|app-imports|app-clean|app-scaffold|',
-    _tasks+='watch|copy-config|',
+    _tasks+='start-server|start|start-app|start-app-no-sass|';
+    _tasks+='sass-compile|sass-compile-min|sass-watch|';
+    _tasks+='app-build|app-watch|app-imports|app-clean|';
+    _tasks+='watch|copy-config|';
     _tasks+='vulcanize|vulcanize-min';
 
     console.log(_tasks);
@@ -87,6 +87,10 @@ tasks.sassCompile=function(config){
     compileSass(config);
 };
 
+tasks.sassCompileMin=function(config){
+    compileSassMin(config);
+};
+
 //watch sass
 tasks.sassWatch=function(config){
     watchSass(config);
@@ -113,10 +117,6 @@ tasks.watch=function(config){
     watchApp(config);
 };
 
-//app scaffold
-tasks.appScaffold=function(config){
-    scaffoldApp(config);
-};
 
 //clean app bin
 tasks.appClean=function(config){
@@ -162,6 +162,13 @@ function watchSass(config){
 function compileSass(config){
     gulp.src(config.sassApp)
         .pipe(sass())
+        .pipe(gulp.dest(config.cssDest));
+}
+
+function compileSassMin(config){
+    gulp.src(config.sassApp)
+        .pipe(sass())
+        .pipe(minify())
         .pipe(gulp.dest(config.cssDest));
 }
 
@@ -220,10 +227,7 @@ function writeAppImports(){
         .pipe(gulp.dest(_config.importSrc));
 }
 
-function scaffoldApp(config){
-    gulp.src('./node_modules/elliptical-gulp/templates/app/**/*.*')
-        .pipe(gulp.dest(config.appPath));
-}
+
 
 function vulcanizeAndMinifyImportFile(config){
     return gulp.src(config.vulcanDest + "/import.html")
@@ -232,7 +236,7 @@ function vulcanizeAndMinifyImportFile(config){
 }
 
 function copyConfig(){
-    gulp.src(['./node_modules/elliptical-gulp/templates/config/config.json','./node_modules/elliptical-gulp/templates/config/.babelrc'])
+    gulp.src(['./node_modules/elliptical-gulp/templates/config/config.json','./node_modules/elliptical-gulp/templates/config/.babelrc','./node_modules/elliptical-gulp/templates/config/.eslintrc'])
         .pipe(gulp.dest('./'));
 }
 
@@ -259,6 +263,9 @@ module.exports=function Tasks(config){
     this.sassCompile=function(){
         tasks.sassCompile(this.config);
     };
+    this.sassCompileMin=function(){
+        tasks.sassCompileMin(this.config);
+    };
     this.sassWatch=function(){
         tasks.sassWatch(this.config);
     };
@@ -273,9 +280,6 @@ module.exports=function Tasks(config){
     };
     this.watch=function(){
         tasks.watch(this.config);
-    };
-    this.appScaffold=function(){
-        tasks.appScaffold(this.config);
     };
     this.appClean=function(){
         tasks.appClean(this.config);

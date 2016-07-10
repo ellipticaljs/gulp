@@ -32,6 +32,10 @@ gulp.task('sass-compile', function () {
     tasks.sassCompile();
 });
 
+gulp.task('sass-compile-min', function () {
+    tasks.sassCompileMin();
+});
+
 gulp.task('sass-watch', function () {
     tasks.sassWatch();
 });
@@ -48,9 +52,6 @@ gulp.task('app-imports', function () {
     tasks.appImports();
 });
 
-gulp.task('app-scaffold', function () {
-    tasks.appImports();
-});
 
 gulp.task('watch', function () {
     tasks.watch();
