@@ -111,6 +111,11 @@ tasks.appImports=function(config){
     writeAppImports();
 };
 
+//write native app imports
+tasks.appNativeImports=function(config){
+    writeNativeAppImports();
+};
+
 //watch app, watch sass
 tasks.watch=function(config){
     watchSass(config);
@@ -227,6 +232,14 @@ function writeAppImports(){
         .pipe(gulp.dest(_config.importSrc));
 }
 
+function writeNativeAppImports(){
+    var root=_config.appScriptPath;
+    var src=getAppSrcArray(root);
+    var target = gulp.src(_config.importSrc + '/app.html');
+    var sources = gulp.src(src, {read: false});
+    return target.pipe(inject(sources,{relative:true}))
+      .pipe(gulp.dest(_config.importSrc));
+}
 
 
 function vulcanizeAndMinifyImportFile(config){
@@ -274,6 +287,9 @@ module.exports=function Tasks(config){
     };
     this.appImports=function(){
         tasks.appImports(this.config);
+    };
+    this.appNativeImports=function(){
+        tasks.appNativeImports(this.config);
     };
     this.appWatch=function(){
         tasks.appWatchImports(this.config);
