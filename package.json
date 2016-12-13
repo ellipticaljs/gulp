@@ -1,7 +1,7 @@
 {
   "name": "elliptical-gulp",
   "description": "Gulp tasks for ellipticaljs",
-  "version": "2.1.1",
+  "version": "2.1.2",
   "author": "S. Francis",
   "license": "MIT",
   "repository": {
