@@ -67,6 +67,10 @@ gulp.task('app-imports', function () {
     tasks.appImports();
 });
 
+# write native es6 app html imports only
+gulp.task('app-native-imports', function () {
+    tasks.appNativeImports();
+});
 
 # watch sass, watch app
 gulp.task('watch', function () {
