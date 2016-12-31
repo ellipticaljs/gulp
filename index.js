@@ -9,7 +9,7 @@ var gulp=require('gulp'),
     del =require('del'),
     babel=require('gulp-babel'),
     minify = require('gulp-minify-css'),
-    minifyInline=require('gulp-minify-inline');
+    htmlmin = require('gulp-htmlmin');
 
 
 var tasks={};
@@ -244,8 +244,12 @@ function writeNativeAppImports(){
 
 function vulcanizeAndMinifyImportFile(config){
     return gulp.src(config.vulcanDest + "/import.html")
-        .pipe(minifyInline())
-        .pipe(gulp.dest(config.vulcanDest));
+      .pipe(htmlmin({
+          minifyJS: true,
+          minifyCSS: true,
+          removeComments: true
+      }))
+      .pipe(gulp.dest(config.vulcanDest));
 }
 
 function copyConfig(){
