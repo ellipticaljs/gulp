@@ -1,7 +1,6 @@
 var gulp=require('gulp'),
   http = require('http'),
   sass = require('gulp-sass'),
-  liveServer = require("live-server"),
   watch=require('gulp-watch'),
   concat=require('gulp-concat'),
   vulcanize = require('gulp-vulcanize'),
@@ -18,7 +17,6 @@ var _config;
 //--internal------------------------------------------------------------------------------------------------------------
 tasks.default=function(){
   var _tasks='elliptical gulp tasks: ';
-  _tasks+='start-server|start|start-app|start-app-no-sass|';
   _tasks+='sass-compile|sass-compile-min|sass-watch|';
   _tasks+='app-build|app-watch|app-imports|app-clean|';
   _tasks+='watch|copy-config|';
@@ -27,60 +25,6 @@ tasks.default=function(){
   console.log(_tasks);
 };
 
-//live server only
-tasks.startServer=function(config){
-
-  //start live server
-  startLiveServer({
-    port:config.devPort,
-    path:config.devPath,
-    host:config.devHost
-  });
-};
-
-//start live server, watch sass
-tasks.start=function(config){
-
-  //start server
-  startLiveServer({
-    port:config.devPort,
-    path:config.devPath,
-    host:config.devHost
-  });
-
-  //watch sass
-  watchSass(config);
-};
-
-//start live server,watch sass,watch app
-tasks.startApp=function(config){
-  //start server
-  startLiveServer({
-    port:config.devPort,
-    path:config.devPath,
-    host:config.devHost
-  });
-
-  //watch app
-  watchApp(config);
-
-  //watch sass
-  watchSass(config);
-};
-
-
-//start live server,watch app
-tasks.startAppNoSass=function(config){
-  //start server
-  startLiveServer({
-    port:config.devPort,
-    path:config.devPath,
-    host:config.devHost
-  });
-
-  //watch app
-  watchApp(config);
-};
 
 //compile sass
 tasks.sassCompile=function(config){
@@ -152,16 +96,6 @@ tasks.vulcanizeMin=function(config){
 
 
 ///--private------------------------------------------------------------------------------------------------------------
-function startLiveServer(opts){
-  var params={
-    port:opts.port,
-    host:opts.host,
-    root:opts.path,
-    noBrowser:true
-  };
-  liveServer.start(params);
-}
-
 
 function watchSass(config){
   watch(config.sassSrc,function(files){
@@ -294,18 +228,6 @@ module.exports=function Tasks(config){
 
   this.default=function(){
     tasks.default(this.config);
-  };
-  this.start=function(){
-    tasks.start(this.config);
-  };
-  this.startServer=function(){
-    tasks.startServer(this.config);
-  };
-  this.startApp=function(){
-    tasks.startApp(this.config);
-  };
-  this.startAppNoSass=function(){
-    tasks.startAppNoSass(this.config);
   };
   this.sassCompile=function(){
     tasks.sassCompile(this.config);

@@ -1,7 +1,7 @@
 {
   "name": "elliptical-gulp",
   "description": "Gulp tasks for ellipticaljs",
-  "version": "2.2.1",
+  "version": "2.3.0",
   "author": "S. Francis",
   "license": "MIT",
   "repository": {
@@ -27,7 +27,6 @@
     "gulp-util": "^2.2.14",
     "gulp-vulcanize": "^6.1.0",
     "gulp-watch": "^1.0.7",
-    "live-server": "^0.7.0",
     "merge-stream": "^0.1.5"
   }
 }
